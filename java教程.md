@@ -822,3 +822,197 @@ class Test{
 定义接口的所有方法都是**public abstract**的修饰，接口修饰符可以省略。
 
 在java中继承一个类只能继承一个类，不能继承多个类。但一个类可以实现多个**interface**
+
+##### 接口继承
+
+一个interface可以继承另一个interface，使用extends，相当于扩展了接口的方法。
+
+##### default方法
+
+在接口中可以定义**default**方法，实现类可以不必要覆写default方法。当给接口新增方法时会涉及到修改全部子类，如果是用default方法，那么子类就不必修改，只要在需要的地方覆写。
+
+有default修饰的方法，可以在接口中实现。
+
+当声明变量为有default修饰的方法的类时，实际实例里面没有覆写默认调用接口的default方法。
+
+```java
+interface Hello{
+    //字段修饰默认为public static final
+    //public static final String name="";
+    //必须初始化值，且不可修改
+    String name="";
+    void hello();
+}
+//继承接口Person拥有Hello接口的所有抽象方法字段
+interface Person extends Hello{
+    void run();
+    //default修饰按需覆写
+    default String runTxt(){
+     	System.out.println("我是runTxt,需要我可以覆写");   
+    }
+}
+//实现接口
+class Students implements Person{
+    public void hello(){
+        System.out.println("我是hello,来自Hello，被Person继承，必须要覆写");
+    }
+    public void run(){
+    	System.out.println("我是run，一定要覆写");
+    }
+}
+```
+
+#### 静态字段和静态方法
+
+静态字段或静态方法，可以直接**Class.字段/Class.方法**无需创建实例。
+
+##### 静态字段（static field）
+
+在一个class中定义的字段，称为**实例字段**。
+
+实例字段的特点：每个实例都有独立的字段，各个实例的同名字段互不影响。
+
+还有一种字段，用**static**修饰，称为**静态字段（static field）**。
+
+静态字段的特点：只有一个共享空间，所有实例都会共享该字段。
+
+##### 静态方法
+
+**用static修饰的方法称为静态方法**
+
+调用实例方法必须要创建实例变量，而调用静态方法则直接**类名.方法**调用。
+
+静态方法无法访问**this.字段**
+
+```java
+class Person{
+	//默认为private字段
+	//static int count;
+    public static int count;
+    
+    String name;
+    int age;
+    //静态方法
+    public static void addCount(){
+        count++;
+    }
+    public static int getCount(){
+       	return count;
+    }
+    //报错
+    //public static void setName(String name){this.name=name;}
+    public void setName(String name){this.name=name;}
+    public String getName(){return name};
+    public void setAge(int age){this.age=age;}
+    public int getAge(){return age};
+    
+    public void run(){
+        System.out.println(getName()+"\n"+getAge()+"\n"+count);
+    }
+}
+public static void main(String[] ages){
+    Person p1 = new Person();
+    Person p2 = new Person();
+    p1.setName("小红");
+    p1.serAge(19);
+    p1.count = 10;
+    p2.setName("小蓝");
+    p2.serAge(29);
+    p2.count = 20;
+    p1.run();//输出小红、19、20
+    p2.run();//输出小蓝、29、20
+    //调用静态
+    Person.addCount();
+    System.out.println(Person.count);//21
+}
+```
+
+#### 包
+
+java内建的package机制是为了避免class命名冲突。
+
+JDK的核心类使用java.lang包，编译器自动导入。
+
+JDK的其他常用类定义在java.util.*,java.math.*,java.text.*,……。
+
+包名推荐使用倒置的域名。
+
+#### 作用域
+
+**public**（公共的）修饰的class、interface可以被其他任何类访问，修饰字段field、方法method，需要访问该class的权限。
+
+**private**（私有的）只能在本地访问，如果该类定义了嵌套类，则嵌套类也拥有访问权限。
+
+**nested class**（嵌套类）定义在一个class内部的class称为嵌套类。
+
+**protected**（受保护的）作用于继承关系，修饰的字段和方法可以被子类访问，以及子类的子类。
+
+**package**（包）指一个类允许访问同一个package的没有public、private修饰的class，以及没有public、protected、private修饰的字段和方法。
+
+**一个java只能有一个public类，但可以包含无数个非public类。**
+
+##### 局部变量
+
+在方法内部定义的变量称为局部变量，局部变量从变量声明处开始到方法结束。方法参数也是局部变量。
+
+##### final
+
+final与访问权限不冲突。
+
+修饰**类class**可以阻止被继承。
+
+修饰**方法method**可以阻止被子类覆写。
+
+修饰**字段field**可以阻止被重新赋值。
+
+#### 内部类(Nested class)
+
+内部类，它被定义在另一个类的内部，所以被称为内部类（Nested Class）。在java中内部类分为多种：
+
+- Inner class：在一个类内定义了另一个类，这个类就是inner class。
+
+- Anonymous class：匿名类，不需要明确地定义这个class，而是在方法内部。
+
+- Static Nested class：静态内部类，和Inner class类似，多个static修饰符的类
+
+  ```java
+  public class Test{
+   	public static void main(String[] ages){
+          
+      }   
+  }
+  public class Outer{
+      private String name;
+      public Outer(String name){
+          this.name = name;
+      }
+      //内部类Inner class
+      class Inner{
+          void hello(){
+              //内部类的方法允许访问所在类的值
+              System.out.println("Hello，"+Outer.this.name);
+          }
+      }
+      //匿名类Anonymous class
+      void Run(){//匿名方法
+          Runnable re = new Runnable() {//匿名类
+              @Override
+              public void run() {
+                  System.out.println("您好！这里是匿名类！");
+              }
+          };
+          System.out.println("加载完成！");
+          re.run();
+      }
+      //静态内部类Static Nested class
+      public static class NInner{
+          public void hello(){
+              //不能访问本地非静态字段
+              System.out.println("这里是静态内部类");
+          }
+      }
+  }
+  ```
+
+  
+
