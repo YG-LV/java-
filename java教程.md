@@ -80,48 +80,48 @@ public class Hello{
 
 - java关键字
 
-  | 类别                 | 关键字       | 说明                         |
-  | -------------------- | ------------ | ---------------------------- |
-  | 访问控制             | private      | 私有的                       |
-  |                      | protected    | 受保护的                     |
-  |                      | public       | 公共的                       |
-  |                      | default      | 默认                         |
-  | 类、方法和变量修饰符 | abstract     | 声明抽象                     |
-  |                      | class        | 类                           |
-  |                      | extends      | 扩充、继承                   |
-  |                      | final        | 最终值、不可改变的           |
-  |                      | implements   | 实现（接口）                 |
-  |                      | native       | 本地、原生方法（非java实现） |
-  |                      | new          | 创建                         |
-  |                      | static       | 静态                         |
-  |                      | strictfp     | 严格浮点、精确浮点           |
-  |                      | synchronized | 线程、同步                   |
-  |                      | transient    | 短暂                         |
-  |                      | volatile     | 易失                         |
-  | 程序控制语句         | break        | 跳出循环                     |
-  |                      | case         | 定义一个值以供switch选择     |
-  |                      | continue     | 继续                         |
-  |                      | do           | 运行                         |
-  |                      | else         | 否则                         |
-  |                      | for          | 循环                         |
-  |                      | if           | 如果                         |
-  |                      | instanceof   | 实例                         |
-  |                      | return       | 返回                         |
-  |                      | switch       | 根据值选择执行               |
-  |                      | while        | 循环                         |
-  | 错误处理             | assert       | 断言表达式是否为真           |
-  |                      | catch        | 捕捉异常                     |
-  |                      | finally      | 有没有异常都执行             |
-  |                      | throw        | 抛出一个异常对象             |
-  |                      | throws       | 声明一个异常可能被抛出       |
-  |                      | try          | 捕获异常                     |
-  | 包相关               | import       | 引入                         |
-  |                      | package      | 包                           |
-  | 变量引用             | super        | 父类、超类                   |
-  |                      | this         | 本类                         |
-  |                      | void         | 无返回值                     |
-  | 保留关键字           | goto         | 是关键字，但不能使用         |
-  |                      | const        | 是关键字，但不能使用         |
+  | 类别                 | 关键字       | 说明                               |
+  | -------------------- | ------------ | ---------------------------------- |
+  | 访问控制             | private      | 私有的（只能在自己类或内部类访问） |
+  |                      | protected    | 受保护的（只能在自己和子类访问）   |
+  |                      | public       | 公共的（任何类的可以访问）         |
+  |                      | default      | 默认（一般用于接口方法）           |
+  | 类、方法和变量修饰符 | abstract     | 声明抽象                           |
+  |                      | class        | 类                                 |
+  |                      | extends      | 扩充、继承                         |
+  |                      | final        | 最终值、不可改变的                 |
+  |                      | implements   | 实现（接口）                       |
+  |                      | native       | 本地、原生方法（非java实现）       |
+  |                      | new          | 创建                               |
+  |                      | static       | 静态                               |
+  |                      | strictfp     | 严格浮点、精确浮点                 |
+  |                      | synchronized | 线程、同步                         |
+  |                      | transient    | 短暂                               |
+  |                      | volatile     | 易失                               |
+  | 程序控制语句         | break        | 跳出循环                           |
+  |                      | case         | 定义一个值以供switch选择           |
+  |                      | continue     | 继续                               |
+  |                      | do           | 运行                               |
+  |                      | else         | 否则                               |
+  |                      | for          | 循环                               |
+  |                      | if           | 如果                               |
+  |                      | instanceof   | 实例                               |
+  |                      | return       | 返回                               |
+  |                      | switch       | 根据值选择执行                     |
+  |                      | while        | 循环                               |
+  | 错误处理             | assert       | 断言表达式是否为真                 |
+  |                      | catch        | 捕捉异常                           |
+  |                      | finally      | 有没有异常都执行                   |
+  |                      | throw        | 抛出一个异常对象                   |
+  |                      | throws       | 声明一个异常可能被抛出             |
+  |                      | try          | 捕获异常                           |
+  | 包相关               | import       | 引入                               |
+  |                      | package      | 包                                 |
+  | 变量引用             | super        | 父类、超类                         |
+  |                      | this         | 本类                               |
+  |                      | void         | 无返回值                           |
+  | 保留关键字           | goto         | 是关键字，但不能使用               |
+  |                      | const        | 是关键字，但不能使用               |
   
   
 
@@ -978,7 +978,15 @@ final与访问权限不冲突。
   ```java
   public class Test{
    	public static void main(String[] ages){
-          
+          //内部类
+          Outer o = new Outer("小明");
+          Outer.Inner i = o.new Inner();
+          i.hello();
+          //匿名类
+          o.Run();
+          //静态类
+          Outer.NInner ni = new Outer.NInner();
+          ni.hello();
       }   
   }
   public class Outer{
@@ -1014,5 +1022,98 @@ final与访问权限不冲突。
   }
   ```
 
-  
+#### classpath和jar
+
+- classpath是JVM用到的一个环境变量，它用来指示JVM如何搜索class，通过classpath决定搜索class的路径和顺序
+  - 不推荐直接设置环境变量，始终建议通过-cp命令传入
+
+- jar包实际就是一个zip格式的压缩文件，而jar包相当于目录，里面可以包含很多.class的文件，方便下载使用。
+  - MANIFEST.MF文件可以提供jar包的信息，可以直接运行jar包。
+
+#### 模块
+
+- Java 9引入的模块目的是为了管理依赖；
+- 使用模块可以按需打包JRE；
+- 使用模块对类的访问权限有了进一步限制。
+
+### 核心类
+
+**java的核心类**，包括：
+
+- 字符串
+- StringBuilder
+- StringJoiner
+- 包装类型
+- JavaBean
+- 举枚
+- 常用工具类
+
+#### 字符串和编码
+
+##### String
+
+String是一个引用类型，它本身也是一个类。java编译器对String有特殊处理，即可以直接用“……”表示一个字符串。
+
+String方法在java中比较是否相同时用==不能正确判断
+
+String字符串，相当于‘A’，‘B’，‘C’三个字符串联起来，组合成“ABC“字符串，组合后‘A’，‘B’，‘C’三个字符都是字符串”ABC“的子串
+
+###### 字符串常用的方法
+
+- equals()：比较两个字符串是否相同
+- equalsIgnoreCase()：比较两个字符串是否相同（忽略大小写）
+- contains()：检查是否包含子串（CharSequence是String实现的一个接口）
+- indexOf()：从前开始搜索子串（返回第一个目标的索引）
+- lastIndexOf()：从后开始搜索子串（返回第一个目标的索引）
+- startsWith()：检查头部是否一致（返回true/false）
+- endsWith()：检查尾部是否一致（返回true/false）
+- substring()：提取子串，一个参数即索引至末尾，两个参数即索引至索引
+- trim()：去除首尾空白字符
+- strip()：去除首尾空白字符（空格字符\u3000也会被移除）
+- isEmpty()：判断字符串长度是否为0（返回true/false）;
+- isBlank()：判断字符串是否只包含空字符（返回true/false）;
+- replace()：替换子串，两个参数第一个需要替换参数，第二个替换成为的参数。
+- split()：字符串分割
+- join()：字符串拼接
+- formatted()|format()：格式化字符串，传入参数替换占位符，生成新字符串。（参数数量和类型要和占位符一致。如果不确定就用%s，可以显示任何数据）常用的占位符有
+  - %s：字符串
+  - %d：整数
+  - %x：十六位进制整数
+  - %f：浮点数
+- valueOf()：转换成为字符串，编译器会根据参数自动选择合适的方法
+
+###### 字符编码
+
+在早期的计算机系统中，为了给字符编码，美国国家标准学会（American National Standard Institute：ANSI）制定了一套英文字母、数字和常用符号的编码，它占用一个字节，编码范围从0-127，最高位始终为0，简称**ASCII**编码。
+
+为了统一全球所有语言的编码，全球统一码联盟发布了Unicode编码，它把世界上主要语言都纳入同一个编码，这样，不同的语言就不会冲突。
+
+#### StringBuilder
+
+它是一个可变对象，用来高效拼接字符串，新增字符时，不会创建新的临时对象，避免浪费内存，提高效率。
+
+可支持链式操作，实现链式操作本身的关键是返回实例本身。
+
+StringBuffer是StringBuilder的线程安全本版，现在很少用。
+
+```java
+StringBuilder ber = new StringBuilder();//可传参指定大小，或初始化内容
+ber.append("");//添加字符
+```
+
+
+
+#### StringJoiner
+
+用指定分隔符拼接字符串内容，使用StringJoiner或者String.join()更方便。
+
+用StringJoiner拼接字符串时，还可以额外附加一个开头和结尾。
+
+String.join()为String提供的静态方法，无需要指定开头和结尾的时候，用String.join()更方便。
+
+```java
+String.join(","，["A","b"]);//参数一分隔的字符，参数二需要分隔的数组，返回组合后的内容
+var s = new StringJoiner(", ","Hello","!");//参数一分隔的字符，参数而初始化开头，参数三初始化结尾
+s.add("")；//每次添加会自动加上，
+```
 
