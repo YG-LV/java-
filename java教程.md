@@ -1117,3 +1117,108 @@ var s = new StringJoiner(", ","Hello","!");//参数一分隔的字符，参数�
 s.add("")；//每次添加会自动加上，
 ```
 
+#### 包装类型
+
+java数据类型分为两种：
+
+- 基本类型：`byte`，`short`，`int`，`long`，`boolean`，`float`，`double`，`char`。
+- 引用类型：所有`class`和`interface`类型。
+
+引用类型可以赋值为null，表示空，基本类型不能赋值为null。
+
+想要把int基本类型变成一个引用类型，可以定义一个Integer类，它只包含一个实例字段int，Intege类就可以视为int的包装类（WrapperClass）。
+
+java核心库为每种基本类型都提供了对应的包装类型：
+
+| 基本类型 | 对应的引用类型      |
+| -------- | ------------------- |
+| boolean  | java.lang.Boolean   |
+| byte     | java.lang.Byte      |
+| short    | java.lang.Short     |
+| int      | java.lang.Integer   |
+| long     | java.lang.Long      |
+| float    | java.langFloat      |
+| double   | java.lang.Double    |
+| char     | java.lang.Character |
+
+##### 自动装箱（Auto Boxing）
+
+```java
+Integer n = 100;//编译器自动使用Integer.valueOf(int)
+int x = n;//编译器自动使用Integer.intValue();
+```
+
+int和Integer可以相互转换，java编译器自动在int和Integer之间转型，把int变为Integer的赋值写法，称为**自动装箱（Auto Boxing）**，反之，Integer变为int的赋值写法，称为**自动拆箱（Auto Unboxing）**。
+
+自动/拆箱只发生在编译阶段，目的是为了少写代码，且会影响代码执行效率，因为编译后的class代码是严格区分基本类型和引用类型的。且基本类型不能为空，引用类型可以为空，拆箱可能会报NullPointerException
+
+##### 不变类
+
+所有包装类型都是不变类。创建了包装类型对象，该对象就是不变的。
+
+**对两个包装类型做比较的时候，不能用==号，对较小的数字有缓存优化，可以比较，对较大的数会出现比对错误，所以必须用equals()方法做比较**
+
+**创建新对象的时候，优先选用静态工厂方法而不是new操作符。**
+
+```java
+Inreger n1 = new Integer(100);//创建新实例
+Inreger n2 = Integer.valueOf(100);//静态方法，尽可能的返回缓存的实例以节省内存
+Inreger n3 = 100;//编译器自动变化为Integer.valueOf(100)，对较小的数字始终返回相同的实例
+```
+
+##### 进制转换
+
+Integer类本身还提供了大量方法。
+
+```java
+System.out.println(Integer.parseInt("100", 16)); // 256,因为按16进制解析
+System.out.println(Integer.toString(100)); // "100",表示为10进制
+System.out.println(Integer.toString(100, 36)); // "2s",表示为36进制
+System.out.println(Integer.toHexString(100)); // "64",表示为16进制
+System.out.println(Integer.toOctalString(100)); // "144",表示为8进制
+System.out.println(Integer.toBinaryString(100)); // "1100100",表示为2进制
+//输出都是String，在计算机内存中，只用二进制表示，不存在十进制或十六进制的表示方法
+```
+
+计算机内存中，只用二进制表示，不存在十进制或者十六进制的表示法，`int n=100`在内存中总是以4字节的二进制表示。![](D:\Study\Self\Typora\images\int内存二进制表示.png)
+
+`System.out.println(n);`是依靠核心库自动把整数格式化为10进制输出并显示在屏幕上，使用`Integer.toHexString(n)`则通过核心库自动把整数格式化为16进制。
+
+**数据储存和显示要分离。**
+
+**所有的整数和浮点数的包装类型的继承自Number**可以直接通过包装类型获取各种基本类型。
+
+#### javaBean
+
+javaBean是一种命名规范的class，它通过getter和setter来定义属性，get()方法是只读，set()方法是字写。
+
+属性是一种通用的叫法，而非java语法规定。
+
+要举枚JavaBean的所有属性，可以直接使用java核心库提供的Introspector，使用Introspector.getBeanInfo()可以获取属性列表。
+
+```java
+public static void main(String[] ages) throws Exception{
+    BeanInfo bi = Introspector.getBeanInfo(Students.class);
+    //默认返回多一个class属性，该属性从Object继承的getClass()方法带来的
+    for(PropertyDescriptor pd : bi.getPropertyDescriptors()){
+        System.out.println(pd.getName());//返回属性名
+        System.out.println(pd.getWriteMethod());//返回set()方法
+        System.out.println(pd.getReadMethod());//返回get()方法
+    }
+} 
+public class Students {
+    //JavaBean命名规范
+    private String name;
+    private Integer age;
+    private String cols;
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
+    public Integer getAge() {return age;}
+    public void setAge(Integer age) {this.age = age;}
+    public String getCols() {return cols;}
+    public void setCols(String cols) {this.cols = cols;}
+}
+```
+
+#### 举枚类
+
