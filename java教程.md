@@ -1220,5 +1220,135 @@ public class Students {
 }
 ```
 
-#### 举枚类
+#### 枚举类
 
+为了让编译器能自动检查某个值在枚举的集合内，不同用途的举枚需要不同的类型来标记，不能混用，我们可以使用**enum**来定义枚举类
+
+**定义枚举类是通过关键字enum实现的，只需依次列出枚举的常量名。**
+
+- name()：返回常量名。
+- ordinal()：返回定义的常量顺序，改变顺序，导致ondinal()返回值发生改变。
+- toString()：在写实现enum时，要覆写toString属性，目的是输出时更有可读性。
+
+判断举枚常量的名字，始终要用name()方法，不能调用toString()。
+
+enum的构造方法要声明为private，字段强烈建议声明为final。
+
+enum适用于switch语句中。
+
+```java
+ public static void main(String[] args) {
+        WeekDay wd = WeekDay.fri;
+        System.out.println(WeekDay.sun.ordinal());//0，无实质意义
+        switch(wd){
+            case sun,mon,tue,wed,thu:
+                System.out.println("上课：" + wd);
+            case fri,sat:
+                System.out.println("放假：" + wd);
+        }
+    }
+//enum WeekDay{} 编译器编译为 final class WeekDay extends Enum{}
+enum WeekDay {
+        sun(1,"星期一"),mon(2,"星期二"),tue(3,"星期三"),wed(4,"星期四"),thu(5,"星期五"),fri(6,"星期六"),sat(7,"星期天");
+
+        private int dayint;
+        private String dayString;
+        WeekDay(int i, String s) {
+                this.dayint = i;
+                this.dayString = s;
+        }
+
+        @Override//覆写
+        public String toString() {
+                return dayString;
+        }
+}
+```
+
+#### 记录类
+
+使用record定义的类是记录类（不变类）。
+
+可以编写构造方法（Compact Constructor）对参数进行验证。
+
+可定义静态方法。
+
+```java
+public class Test{
+    public static void main(String[] ages){
+        var p = Piont.of(90,100);//调用静态无需new
+        System.out.println(p.toString());
+    }
+}
+public record Piont(Integer x,Integer y){//记录类（不变类），创建后即无法修改参数
+    public Pinot{//Compact Constructor
+        if(x>100||y<90){//验证参数是否满足条件
+            throw new RuntimeException();
+        }
+    }
+    public static Pinot of(Integer x,Integer y){//静态方法调用，使用时无需new
+        return new Pinot(x,y);
+    }
+}
+public final Piont extends Record{//编译器编译后类似
+    ...
+    public Piont(Integer x,Integer y){
+        this.x=x;
+        this.y=y;
+    }
+}
+public final Piont{//相当于上述代码
+    private final Integer x;
+    private final Integer y;
+    
+    public Piont(Integer x,Integer y){
+        this.x = x;
+        this.y = y;
+    }
+    
+    public static Pinot of(Integer x,Integer y){//静态方法调用，使用时无需new
+        return new Pinot(x,y);
+    }
+    
+    public String toString(){
+        return "Piont = [x="+x+",y="+y+"]";
+    }
+}
+```
+
+#### BigInteger
+
+当使用的整数超过了java的CPU原生提供的整型最大范围的64位long型整数时，只能用软件来模拟一个大整数。**java.math.BigInteger**就是用来表示任意大小的整数。
+
+- BigInteger内部用一个int[]数组来模拟一个非常大的整数。
+- BigInteger不会有范围限制，但缺点是速度比较慢。
+- BigInteger是不变类，并且继承自Number。
+- 将BigInteger转换基本类型时可以使用longValuerExact()……等方法保证结果的准确，转换时如果超出范围，将直接抛出ArithmeticException异常。
+
+#### BigDecimal
+
+和BigInteger类似，BigDecimal可以表示任意大小且精度完全准确的浮点数。
+
+- BigDecimal是通过BigInteger和scale来表示的，即BigInteger表示一个完整的整数，而scale表示小数位
+
+- BigDecimal用于表示精确的小数，常用于财务计算。
+- 比较BigDecimal的值是否相等，必须使用compareTo()，而不能使用equals()。
+
+#### 常用工具类
+
+Math类，用来进行数学计算，它提供了大量的静态方法。
+
+- Math.abs(x)：求绝对值。
+- Math.max(x,y)：取最大值、Math.min(x,y)：取最小值。
+- Math.pow(x,y)：计算x的y次方。
+- Math.sqrt(x)：计算√x根号。
+- Math.exp(x)：计算e的x次方。
+- Math.log(4)：计算以e为底的对数。
+- Math.log10(100)：计算以10为底的对数。
+- Math.sin(x)|Math.cos(x)|Math.tan(x)|Math.asin(x)|Math.acos(x)：三角函数。
+- Math.random()：生成一个随机数x，x的范围是0<=x<1。
+- Math还提供数学常量：Math.PI、Math.E。
+
+java标准库还提供了一个**StrictMath**，提供的方法和Math一致。
+
+区别在于，由于浮点数计算存在误差，而StrictMath保证不同平台的计算结果完全相同，Math会尽量针对平台优化计算速度。
